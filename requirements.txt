@@ -1,0 +1,4 @@
+colorama
+requests
+prettytable
+beautifulsoup4
