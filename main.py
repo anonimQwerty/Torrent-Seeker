@@ -4,8 +4,18 @@
 # Import modules
 from requests import get
 from bs4 import BeautifulSoup
-from colorama import Fore
-from prettytable import PrettyTable
+from translate import durka
+
+
+# Getting launage
+input_string=launage['Input_string']
+launage_str=launage['launage_string']
+first_use=launage['First']
+last_use=launage['Last']
+torrent_category=launage['Category']
+name_torrent=launage['Name']
+size_torrent=launage['Size']
+
 
 # Request headers
 headers = {
@@ -15,34 +25,34 @@ headers = {
     "Referer": "https://iknowwhatyoudownload.com"
 }
 
-print(rf"""{Fore.LIGHTGREEN_EX}
+print(r"""
   _____                                        _       ____                  _                  
  |_   _|   ___    _ __   _ __    ___   _ __   | |_    / ___|    ___    ___  | | __   ___   _ __ 
    | |    / _ \  | '__| | '__|  / _ \ | '_ \  | __|   \___ \   / _ \  / _ \ | |/ /  / _ \ | '__|
    | |   | (_) | | |    | |    |  __/ | | | | | |_     ___) | |  __/ |  __/ |   <  |  __/ | |   
    |_|    \___/  |_|    |_|     \___| |_| |_|  \__|   |____/   \___|  \___| |_|\_\  \___| |_|   
-                                                                           {Fore.LIGHTYELLOW_EX} > Created by LimerBoy
-{Fore.RESET}
+                                                                            > Created by LimerBoy,
+
+                                                                           Forked by AnonimQwerty
 """)
 
 # Get user input
-ip = input(f" {Fore.LIGHTCYAN_EX}TorrentSeeker@target_ip : {Fore.LIGHTMAGENTA_EX}")
+ip = input(f"{input_string}: ")
+print('\n')
 
 # Get request
-page = get("https://iknowwhatyoudownload.com/en/peer/?ip=" + ip,
+page = get(f"https://iknowwhatyoudownload.com/{launage_str}/peer/?ip=" + ip,
            headers=headers)
 soup = BeautifulSoup(page.content, "html.parser")
 table = soup.find(class_="table").find("tbody")
 torrents = table.find_all("tr")
-output = PrettyTable(["Name", "Category", "Size", "First seen", "Last seen"])
+
 
 # Show torrents table
 for torrent in torrents:
     first, last = torrent.find_all(class_="date-column")
     first, last = first.text, last.text
     category = torrent.find(class_="category-column").text
-    name = torrent.find(class_="name-column").text.replace("\n", '')
+    name = torrent.find(class_="name-column").text.replace("\n", '').replace('    ', '')
     size = torrent.find(class_="size-column").text
-    output.add_row([name, category, size, first, last])
-
-print(f" {Fore.YELLOW}Found {len(torrents)} torrents... \n{Fore.LIGHTGREEN_EX}{output}{Fore.RESET}")
+    print(f'{first_use}{first}, {last_use}{last}, {torrent_category}{category}, {name_torrent}{name}, {size_torrent}{size}\n')
