@@ -4,7 +4,7 @@
 # Import modules
 from requests import get
 from bs4 import BeautifulSoup
-from translate import durka
+from translate import durka as launage
 
 
 # Getting launage
@@ -15,6 +15,7 @@ last_use=launage['Last']
 torrent_category=launage['Category']
 name_torrent=launage['Name']
 size_torrent=launage['Size']
+savechoice=launage['Savechoice']
 
 
 # Request headers
@@ -34,10 +35,12 @@ print(r"""
                                                                             > Created by LimerBoy,
 
                                                                            Forked by AnonimQwerty
+                                                                           My blog: @anonims_blog
 """)
 
 # Get user input
 ip = input(f"{input_string}: ")
+save=input(f'{savechoice}').lower()
 print('\n')
 
 # Get request
@@ -46,7 +49,7 @@ page = get(f"https://iknowwhatyoudownload.com/{launage_str}/peer/?ip=" + ip,
 soup = BeautifulSoup(page.content, "html.parser")
 table = soup.find(class_="table").find("tbody")
 torrents = table.find_all("tr")
-
+results=[]
 
 # Show torrents table
 for torrent in torrents:
@@ -55,4 +58,12 @@ for torrent in torrents:
     category = torrent.find(class_="category-column").text
     name = torrent.find(class_="name-column").text.replace("\n", '').replace('    ', '')
     size = torrent.find(class_="size-column").text
+    result=f'{first_use}{first}, {last_use}{last}, {torrent_category}{category}, {name_torrent}{name}, {size_torrent}{size}\n\n'
+    results.append(result)
     print(f'{first_use}{first}, {last_use}{last}, {torrent_category}{category}, {name_torrent}{name}, {size_torrent}{size}\n')
+
+if save=='y':
+  with open('result.txt', 'a', encoding='utf-8') as f:
+    f.write(f'==========={ip}==========\n\n')
+    for i in results:
+      f.write(i)
